@@ -1,21 +1,18 @@
 
 import { EventEmitter } from 'events'
 import { RequestInit } from 'node-fetch'
-import * as puppeteer from 'puppeteer'
+import puppeteer from 'puppeteer-in-electron'
 
 declare namespace WAWebJS {
 
     export class Client extends EventEmitter {
-        constructor(options: ClientOptions)
+        constructor(options: ClientOptions,pupPage: puppeteer.Page)
 
         /** Current connection information */
         public info: ClientInfo
 
         /** Puppeteer page running WhatsApp Web */
         pupPage?: puppeteer.Page
-
-        /** Puppeteer browser running WhatsApp Web */
-        pupBrowser?: puppeteer.Browser
 
         /**Accepts an invitation to join a group */
         acceptInvite(inviteCode: string): Promise<string>

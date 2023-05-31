@@ -1,7 +1,6 @@
 'use strict';
 
 const EventEmitter = require('events');
-const puppeteer = require('puppeteer');
 const moduleRaid = require('@pedroslopez/moduleraid/moduleraid');
 
 const Util = require('./util/Util');
@@ -53,7 +52,7 @@ const NoAuth = require('./authStrategies/NoAuth');
  * @fires Client#group_admin_changed
  */
 class Client extends EventEmitter {
-    constructor(options = {}) {
+    constructor(options = {},pupPage) {
         super();
 
         this.options = Util.mergeDefault(DefaultOptions, options);
@@ -78,9 +77,7 @@ class Client extends EventEmitter {
         }
 
         this.authStrategy.setup(this);
-
-        this.pupBrowser = null;
-        this.pupPage = null;
+        this.pupPage = pupPage;
 
         Util.setFfmpegPath(this.options.ffmpegPath);
     }
@@ -89,33 +86,18 @@ class Client extends EventEmitter {
      * Sets up events and requirements, kicks off authentication request
      */
     async initialize() {
-        let [browser, page] = [null, null];
+
+        const page=this.pupPage;
 
         await this.authStrategy.beforeBrowserInitialized();
 
-        const puppeteerOpts = this.options.puppeteer;
-        if (puppeteerOpts && puppeteerOpts.browserWSEndpoint) {
-            browser = await puppeteer.connect(puppeteerOpts);
-            page = await browser.newPage();
-        } else {
-            const browserArgs = [...(puppeteerOpts.args || [])];
-            if(!browserArgs.find(arg => arg.includes('--user-agent'))) {
-                browserArgs.push(`--user-agent=${this.options.userAgent}`);
-            }
-
-            browser = await puppeteer.launch({...puppeteerOpts, args: browserArgs});
-            page = (await browser.pages())[0];
-        }
-
+    
         if (this.options.proxyAuthentication !== undefined) {
             await page.authenticate(this.options.proxyAuthentication);
         }
       
         await page.setUserAgent(this.options.userAgent);
         if (this.options.bypassCSP) await page.setBypassCSP(true);
-
-        this.pupBrowser = browser;
-        this.pupPage = page;
 
         await this.authStrategy.afterBrowserInitialized();
         await this.initWebVersionCache();
