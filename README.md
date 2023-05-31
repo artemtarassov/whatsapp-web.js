@@ -1,5 +1,8 @@
 [![npm](https://img.shields.io/npm/v/whatsapp-web.js.svg)](https://www.npmjs.com/package/whatsapp-web.js) [![Depfu](https://badges.depfu.com/badges/4a65a0de96ece65fdf39e294e0c8dcba/overview.svg)](https://depfu.com/github/pedroslopez/whatsapp-web.js?project_id=9765) ![WhatsApp_Web 2.2322.15](https://img.shields.io/badge/WhatsApp_Web-2.2322.15-brightgreen.svg) [![Discord Chat](https://img.shields.io/discord/698610475432411196.svg?logo=discord)](https://discord.gg/H7DqQs4)  
 
+# What i changed in this fork
+Removed pupeteer dependency so this module could work within an electron application.
+
 # whatsapp-web.js
 A WhatsApp API client that connects through the WhatsApp Web browser app
 
